@@ -1,49 +1,95 @@
-# Hospitality Domain Dashboard - Using Power BI
+Hospitality Domain Dashboard - Data Cleaning Using DAX
 
-## Overview
-This Power BI project presents interactive dashboards analyzing key metrics across multiple hotel properties under Atliq. The dashboards include detailed reports on revenue, occupancy rates, ADR (Average Daily Rate), and customer ratings, segmented by property and city. Weekly data tracking provides insights into performance trends, room utilization, and platform efficiency, aiding in optimizing hotel operations and decision-making.
+This shows how I cleaned and analyzed hotel booking data using Power BI. I loaded data from Excel, cleaned it with Power Query and DAX, and created relationships between tables to build useful reports and dashboards.
 
-## Dashboard Preview
-Here’s a preview of the Hospitality Domain Dashboard; check the PDF link below.
+## Process
 
-## PDF File
-You can view or download the following PDF file for more details:
+### 1. Data Loading
+I loaded data from Excel files into Power BI.
 
-- [Hospitality Domain Dashboard Report](https://github.com/saurabhtripathiworks/Hospitality-Domain-Dashboard---Using-Power-BI/blob/main/Hospitality%20Domain%20Dashboard.pdf)
+### 2. Data Cleaning
+I used Power Query to clean the data:
+- Removed duplicates
+- Fixed missing values
+- Formatted columns
 
-## About this Dataset
-The dataset includes five CSV files covering dates, hotels, rooms, aggregated bookings, and individual bookings. Key columns provide insights into room categories, booking details, guest counts, revenues, and ratings, supporting a comprehensive analysis of hotel operations and customer behavior.
+### 3. Creating Relationships
+I created relationships between tables to link them together for analysis.
 
-In this project, data was initially loaded from Excel files into Power BI. I used Power Query to clean the data by removing duplicates, fixing missing values, and formatting columns. Relationships were then established between the tables to enable comprehensive analysis. A table called `Key Measures` was created to calculate important metrics and provide actionable insights.
+### 4. DAX Calculations
+I created a table called `Key Measures` to calculate important metrics:
 
-## Tools Used
-- **Excel**: Data loading and preparation.
-- **Power Query**: Data cleaning and transformation.
-- **DAX (Data Analysis Expressions)**: Data modeling and calculations.
-- **Power BI**: Dashboard creation and visualization.
+Revenue = SUM(fact_bookings[revenue_realized])
 
-## Insights
-- **Overall Metrics:**
-  - Total revenue: 1,688 million
-  - Average RevPAR: 7,337
-  - Average Occupancy: 58%
-  - Average ADR: 12,696
-  - Realisation %: 70%
-  - Cancellation %: 24%-26%
-  
-- **Top Performing Properties:**
-  - Atliq Exotica, Mumbai: Revenue 117M, ADR 16,141, Occupancy 66%
-  - Atliq Palace, Mumbai: Revenue 100M, ADR 16,016, Occupancy 66%
-  
-- **Lowest Performing Properties:**
-  - Atliq Exotica, Hyderabad: Revenue 47M, ADR 9,111, Occupancy 45%
-  - Atliq Bay, Mumbai: Revenue 51M, ADR 15,167, Occupancy 45%
+Total Bookings = COUNT(fact_bookings[booking_id])
 
-## Usage
-1. **Download Power BI Desktop**: Install from the [official website](https://powerbi.microsoft.com/).
-2. **Clone This Repository**: Get the files from the repository.
-3. **Open Dashboard**: Load `Hospitality_Domain_Dashboard.pbix` in Power BI Desktop.
-4. **Interact**: Explore the dashboard to analyze hotel metrics and trends.
+Total Capacity = SUM(fact_aggregated_bookings[capacity])
 
-## Contact
-For inquiries, email [saurabhtripathiworks@gmail.com](mailto:saurabhtripathiworks@gmail.com).
+Total Successful Bookings = SUM(fact_aggregated_bookings[successful_bookings])
+
+Occupancy % = DIVIDE([Total Successful Bookings], [Total Capacity], 0)
+
+Average Rating = AVERAGE(fact_bookings[ratings_given])
+
+No of days = DATEDIFF(MIN(dim_date[date]), MAX(dim_date[date]), DAY) + 1
+
+Total cancelled bookings = CALCULATE([Total Bookings], fact_bookings[booking_status] = "Cancelled")
+
+Cancellation % = DIVIDE([Total cancelled bookings], [Total Bookings])
+
+Total Checked Out = CALCULATE([Total Bookings], fact_bookings[booking_status] = "Checked Out")
+
+Total no show bookings = CALCULATE([Total Bookings], fact_bookings[booking_status] = "No Show")
+
+No Show rate % = DIVIDE([Total no show bookings], [Total Bookings])
+
+Booking % by Platform = DIVIDE([Total Bookings], CALCULATE([Total Bookings], ALL(fact_bookings[booking_platform]))) * 100
+
+Booking % by Room class = DIVIDE([Total Bookings], CALCULATE([Total Bookings], ALL(dim_rooms[room_class]))) * 100
+
+ADR = DIVIDE([Revenue], [Total Bookings], 0)
+
+Realisation % = 1 - ([Cancellation %] + [No Show rate %])
+
+RevPAR = DIVIDE([Revenue], [Total Capacity])
+
+DBRN = DIVIDE([Total Bookings], [No of days])
+
+DSRN = DIVIDE([Total Capacity], [No of days])
+
+DURN = DIVIDE([Total Checked Out], [No of days])
+
+Revenue WoW change % = 
+VAR selv = IF(HASONEFILTER(dim_date[wn]), SELECTEDVALUE(dim_date[wn]), MAX(dim_date[wn]))
+VAR revcw = CALCULATE([Revenue], dim_date[wn] = selv)
+VAR revpw = CALCULATE([Revenue], FILTER(ALL(dim_date), dim_date[wn] = selv - 1))
+
+Occupancy WoW change % = 
+VAR selv = IF(HASONEFILTER(dim_date[wn]), SELECTEDVALUE(dim_date[wn]), MAX(dim_date[wn]))
+VAR revcw = CALCULATE([Occupancy %], dim_date[wn] = selv)
+VAR revpw = CALCULATE([Occupancy %], FILTER(ALL(dim_date), dim_date[wn] = selv - 1))
+RETURN DIVIDE(revcw, revpw, 0) - 1
+
+ADR WoW change % = 
+VAR selv = IF(HASONEFILTER(dim_date[wn]), SELECTEDVALUE(dim_date[wn]), MAX(dim_date[wn]))
+VAR revcw = CALCULATE([ADR], dim_date[wn] = selv)
+VAR revpw = CALCULATE([ADR], FILTER(ALL(dim_date), dim_date[wn] = selv - 1))
+RETURN DIVIDE(revcw, revpw, 0) - 1
+
+Revpar WoW change % = 
+VAR selv = IF(HASONEFILTER(dim_date[wn]), SELECTEDVALUE(dim_date[wn]), MAX(dim_date[wn]))
+VAR revcw = CALCULATE([RevPAR], dim_date[wn] = selv)
+VAR revpw = CALCULATE([RevPAR], FILTER(ALL(dim_date), dim_date[wn] = selv - 1))
+RETURN DIVIDE(revcw, revpw, 0) - 1
+
+Realisation WoW change % = 
+VAR selv = IF(HASONEFILTER(dim_date[wn]), SELECTEDVALUE(dim_date[wn]), MAX(dim_date[wn]))
+VAR revcw = CALCULATE([Realisation %], dim_date[wn] = selv)
+VAR revpw = CALCULATE([Realisation %], FILTER(ALL(dim_date), dim_date[wn] = selv - 1))
+RETURN DIVIDE(revcw, revpw, 0) - 1
+
+DSRN WoW change % = 
+VAR selv = IF(HASONEFILTER(dim_date[wn]), SELECTEDVALUE(dim_date[wn]), MAX(dim_date[wn]))
+VAR revcw = CALCULATE([DSRN], dim_date[wn] = selv)
+VAR revpw = CALCULATE([DSRN], FILTER(ALL(dim_date), dim_date[wn] = selv - 1))
+RETURN DIVIDE(revcw, revpw, 0) - 1
