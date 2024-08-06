@@ -14,6 +14,8 @@ You can view or download the following PDF file for more details:
 ## About this Dataset
 The dataset includes five CSV files covering dates, hotels, rooms, aggregated bookings, and individual bookings. Key columns provide insights into room categories, booking details, guest counts, revenues, and ratings, supporting a comprehensive analysis of hotel operations and customer behavior.
 
+In this project, data was initially loaded from Excel files into Power BI. I used Power Query to clean the data by removing duplicates, fixing missing values, and formatting columns. Relationships were then established between the tables to enable comprehensive analysis. A table called `Key Measures` was created to calculate important metrics and provide actionable insights.
+
 ## Tools Used
 - **Excel**: Data loading and preparation.
 - **Power Query**: Data cleaning and transformation.
