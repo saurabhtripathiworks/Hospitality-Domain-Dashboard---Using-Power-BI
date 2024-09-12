@@ -4,12 +4,17 @@
 This Power BI project presents interactive dashboards analyzing key metrics across multiple hotel properties under Atliq. The dashboards include detailed reports on revenue, occupancy rates, ADR (Average Daily Rate), and customer ratings, segmented by property and city. Weekly data tracking provides insights into performance trends, room utilization, and platform efficiency, aiding in optimizing hotel operations and decision-making.
 
 ## Dashboard Preview
-Here’s a preview of the Hospitality Domain Dashboard; check the PDF link below.
+Here’s a preview of the Hospitality Domain Dashboard; check the PDF link and click on the **[Live Dashboard](https://app.powerbi.com/view?r=eyJrIjoiZGQ0ZTBmYzgtMDZiNy00YTdiLWI5NjAtYTlhMjVhZjA1ZDc5IiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9)** to view the live dashboard.
 
 ## PDF File
 You can view or download the following PDF file for more details:
 
 - [Hospitality Domain Dashboard Report](https://github.com/saurabhtripathiworks/Hospitality-Domain-Dashboard---Using-Power-BI/blob/main/Hospitality%20Domain%20Dashboard.pdf)
+
+## Live Dashboard
+You can view the live Power BI dashboard here:
+
+- [Live Dashboard](https://app.powerbi.com/view?r=eyJrIjoiZGQ0ZTBmYzgtMDZiNy00YTdiLWI5NjAtYTlhMjVhZjA1ZDc5IiwidCI6ImM2ZTU0OWIzLTVmNDUtNDAzMi1hYWU5LWQ0MjQ0ZGM1YjJjNCJ9)
 
 ## About this Dataset
 The dataset includes five CSV files covering dates, hotels, rooms, aggregated bookings, and individual bookings. Key columns provide insights into room categories, booking details, guest counts, revenues, and ratings, supporting a comprehensive analysis of hotel operations and customer behavior.
